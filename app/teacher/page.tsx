@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { connection } from 'next/server';
 import { getCurrentProfile } from '@/lib/supabase/profile';
+import Link from 'next/link';
 
 async function TeacherDashboard() {
   await connection();
@@ -23,8 +24,14 @@ async function TeacherDashboard() {
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">My Students</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            No students linked yet.
+            Link to students and manage your roster.
           </p>
+          <Link
+            href="/teacher/students"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            Open students page →
+          </Link>
         </div>
 
         <div className="rounded-lg border p-4">

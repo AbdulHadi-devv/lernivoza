@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { connection } from 'next/server';
 import { getCurrentProfile } from '@/lib/supabase/profile';
+import Link from 'next/link';
 
 async function StudentDashboard() {
   await connection();
@@ -19,7 +20,20 @@ async function StudentDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-lg border p-4">
+          <h2 className="font-medium">My Teachers</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Approved teachers and pending requests.
+          </p>
+          <Link
+            href="/student/teachers"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            View →
+          </Link>
+        </div>
+
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">My Subjects</h2>
           <p className="text-sm text-muted-foreground mt-1">
