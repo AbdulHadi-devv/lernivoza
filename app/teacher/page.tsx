@@ -37,8 +37,14 @@ async function TeacherDashboard() {
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">Gradebook</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            No assessments recorded yet.
+            Record and review student assessments.
           </p>
+          <Link
+            href="/teacher/assessments"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            Open gradebook →
+          </Link>
         </div>
 
         <div className="rounded-lg border p-4">
