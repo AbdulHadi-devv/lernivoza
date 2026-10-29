@@ -50,8 +50,14 @@ async function TeacherDashboard() {
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">Attendance</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            No attendance recorded yet.
+            Record and review attendance.
           </p>
+          <Link
+            href="/teacher/attendance"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            Open attendance →
+          </Link>
         </div>
       </div>
     </div>

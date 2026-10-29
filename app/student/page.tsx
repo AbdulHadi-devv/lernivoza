@@ -57,8 +57,14 @@ async function StudentDashboard() {
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">Attendance</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            No attendance records yet.
+            View your attendance history.
           </p>
+          <Link
+            href="/student/attendance"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            View attendance →
+          </Link>
         </div>
       </div>
     </div>
