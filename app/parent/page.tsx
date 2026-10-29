@@ -63,8 +63,14 @@ async function ParentDashboard() {
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">Progress</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Track your child's academic progress.
+            View each child's assessment history.
           </p>
+          <Link
+            href="/parent/children"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            View grades →
+          </Link>
         </div>
       </div>
     </div>
