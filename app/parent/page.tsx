@@ -24,13 +24,13 @@ async function ParentDashboard() {
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">My Children</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            No children added yet.
+            Add a child and view their progress.
           </p>
           <Link
-            href="#"
+            href="/parent/children/add"
             className="text-sm underline underline-offset-4 mt-2 inline-block"
           >
-            Add a child (coming soon)
+            Add a child →
           </Link>
         </div>
 

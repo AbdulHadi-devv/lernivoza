@@ -20,7 +20,7 @@ async function StudentDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">My Teachers</h2>
           <p className="text-sm text-muted-foreground mt-1">
@@ -31,6 +31,19 @@ async function StudentDashboard() {
             className="text-sm underline underline-offset-4 mt-2 inline-block"
           >
             View →
+          </Link>
+        </div>
+
+        <div className="rounded-lg border p-4">
+          <h2 className="font-medium">Parent Requests</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Approve parents who want to link to your account.
+          </p>
+          <Link
+            href="/student/parent-requests"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            Review requests →
           </Link>
         </div>
 
