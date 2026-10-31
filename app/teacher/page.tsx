@@ -20,7 +20,7 @@ async function TeacherDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">My Students</h2>
           <p className="text-sm text-muted-foreground mt-1">
@@ -44,6 +44,19 @@ async function TeacherDashboard() {
             className="text-sm underline underline-offset-4 mt-2 inline-block"
           >
             Open gradebook →
+          </Link>
+        </div>
+
+        <div className="rounded-lg border p-4">
+          <h2 className="font-medium">Assignments</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Give homework and track submissions.
+          </p>
+          <Link
+            href="/teacher/assignments"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            Open assignments →
           </Link>
         </div>
 

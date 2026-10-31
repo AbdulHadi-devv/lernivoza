@@ -79,6 +79,19 @@ async function StudentDashboard() {
             View attendance →
           </Link>
         </div>
+
+        <div className="rounded-lg border p-4">
+          <h2 className="font-medium">Assignments</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Homework from your teachers.
+          </p>
+          <Link
+            href="/student/assignments"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            View assignments →
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -95,3 +108,4 @@ export default function StudentPage() {
     </div>
   );
 }
+
