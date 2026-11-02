@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { connection } from 'next/server';
 import { getCurrentProfile } from '@/lib/supabase/profile';
+import { getUnreadCount } from '@/lib/supabase/messages';
 import Link from 'next/link';
 
 async function ParentDashboard() {
@@ -10,6 +11,8 @@ async function ParentDashboard() {
 
   if (!profile) redirect('/auth/login');
   if (profile.role !== 'parent') redirect('/protected');
+
+  const unread = await getUnreadCount();
 
   return (
     <div className="flex flex-col gap-6">
@@ -20,7 +23,7 @@ async function ParentDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">My Children</h2>
           <p className="text-sm text-muted-foreground mt-1">
@@ -63,13 +66,33 @@ async function ParentDashboard() {
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">Progress</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            View each child's assessment history.
+            View each child&apos;s assessment history.
           </p>
           <Link
             href="/parent/children"
             className="text-sm underline underline-offset-4 mt-2 inline-block"
           >
             View grades →
+          </Link>
+        </div>
+
+        <div className="rounded-lg border p-4">
+          <h2 className="font-medium">
+            Messages
+            {unread > 0 && (
+              <span className="ml-2 rounded-full bg-red-600 px-2 py-0.5 text-xs text-white">
+                {unread}
+              </span>
+            )}
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Message your children&apos;s teachers.
+          </p>
+          <Link
+            href="/messages"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            Open messages →
           </Link>
         </div>
       </div>
