@@ -33,7 +33,9 @@ export interface CreateAssignmentInput {
 }
 
 /**
- * Teacher creates an assignment and an associated submission row.
+ * Teacher creates an assignment.
+ * The matching assignment_submissions row is created by a database trigger
+ * in the same transaction, so there is no half-created state to clean up.
  */
 export async function createAssignment(
   input: CreateAssignmentInput
@@ -55,7 +57,6 @@ export async function createAssignment(
     return { error: 'Resource link must start with http:// or https://.' };
   }
 
-  // 1. Create the assignment
   const { data: assignment, error: assignError } = await supabase
     .from('assignments')
     .insert({
@@ -79,21 +80,6 @@ export async function createAssignment(
       };
     }
     return { error: assignError.message };
-  }
-
-  // 2. Create the submission row
-  const { error: subError } = await supabase
-    .from('assignment_submissions')
-    .insert({
-      assignment_id: assignment.id,
-      student_id: input.student_id,
-      status: 'assigned',
-    });
-
-  if (subError) {
-    // Roll back the assignment row so we don't leave a stranded record
-    await supabase.from('assignments').delete().eq('id', assignment.id);
-    return { error: `Failed to create submission: ${subError.message}` };
   }
 
   return { assignment: assignment as Assignment };
@@ -171,6 +157,7 @@ export async function getMyAssignments(): Promise<Assignment[]> {
 
 /**
  * Student marks an assignment as submitted. Only works on 'assigned' status.
+ * The database sets submitted_at and rejects any other status change.
  */
 export async function markAssignmentSubmitted(
   assignmentId: string,
@@ -186,9 +173,7 @@ export async function markAssignmentSubmitted(
     .from('assignment_submissions')
     .update({
       status: 'submitted',
-      submitted_at: new Date().toISOString(),
       submission_notes: notes?.trim() || null,
-      updated_at: new Date().toISOString(),
     })
     .eq('assignment_id', assignmentId)
     .eq('student_id', user.id)

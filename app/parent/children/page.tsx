@@ -103,7 +103,7 @@ export default function ParentChildrenPage() {
   async function handleRevoke(linkId: string, childName: string) {
     if (
       !window.confirm(
-        `Revoke your access to ${childName}'s records? You can send a new link request later.`
+        `Revoke your access to ${childName}'s records? This cannot be undone from the app yet.`
       )
     ) {
       return;
@@ -413,4 +413,3 @@ function AssignmentBadge({
     </span>
   );
 }
-
