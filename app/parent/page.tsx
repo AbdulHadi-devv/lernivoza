@@ -56,10 +56,10 @@ async function ParentDashboard() {
             Search for tutors and institutes.
           </p>
           <Link
-            href="#"
+            href="/"
             className="text-sm underline underline-offset-4 mt-2 inline-block"
           >
-            Search (coming soon)
+            Search tutors →
           </Link>
         </div>
 

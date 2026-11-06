@@ -77,6 +77,19 @@ async function TeacherDashboard() {
         </div>
 
         <div className="rounded-lg border p-4">
+          <h2 className="font-medium">My Tutor Profile</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Set your fee, subjects and area so parents can find you.
+          </p>
+          <Link
+            href="/teacher/profile"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            Edit profile →
+          </Link>
+        </div>
+
+        <div className="rounded-lg border p-4">
           <h2 className="font-medium">
             Messages
             {unread > 0 && (
