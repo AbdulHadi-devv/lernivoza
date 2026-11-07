@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
+import { connection } from 'next/server';
 import { SiteNav } from '@/components/site-nav';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { Button } from '@/components/ui/button';
@@ -89,6 +90,7 @@ async function SearchSection({
 }: {
   searchParams: Promise<RawSearchParams>;
 }) {
+  await connection();
   const raw = await searchParams;
   const { filters, values } = parseTutorFilters(raw);
 

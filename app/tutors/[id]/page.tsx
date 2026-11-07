@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
 import { SiteNav } from '@/components/site-nav';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { getTutor } from '@/lib/supabase/tutors';
@@ -14,6 +15,7 @@ import {
 } from '@/lib/supabase/tutors-utils';
 
 async function TutorProfile({ params }: { params: Promise<{ id: string }> }) {
+  await connection();
   const { id } = await params;
   if (!isUuid(id)) notFound();
 
