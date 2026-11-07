@@ -4,7 +4,10 @@ import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { SiteNav } from '@/components/site-nav';
 import { ThemeSwitcher } from '@/components/theme-switcher';
-import { getTutor } from '@/lib/supabase/tutors';
+import { getSubjects, getTutor } from '@/lib/supabase/tutors';
+import { getCurrentProfile } from '@/lib/supabase/profile';
+import { getLinksForParent } from '@/lib/supabase/parent-links';
+import { EnquiryForm } from '@/components/enquiry-form';
 import {
   formatFee,
   formatGrades,
@@ -13,6 +16,80 @@ import {
   modeLabel,
   verificationLabel,
 } from '@/lib/supabase/tutors-utils';
+
+async function EnquirySection({
+  tutorId,
+  tutorName,
+  tutorSubjects,
+}: {
+  tutorId: string;
+  tutorName: string;
+  tutorSubjects: string[];
+}) {
+  const profile = await getCurrentProfile();
+
+  if (!profile) {
+    return (
+      <section className="rounded-lg border p-4 flex flex-col gap-2">
+        <h2 className="font-medium">Send an enquiry</h2>
+        <p className="text-sm text-muted-foreground">
+          Sign in or create a parent account to send {tutorName} an enquiry.
+        </p>
+        <div className="flex gap-4 text-sm">
+          <Link href="/auth/login" className="underline underline-offset-4">
+            Sign in
+          </Link>
+          <Link href="/auth/sign-up" className="underline underline-offset-4">
+            Create an account
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+  if (profile.role !== 'parent') {
+    return (
+      <p className="text-sm text-muted-foreground">
+        Only parent accounts can send enquiries to tutors.
+      </p>
+    );
+  }
+
+  const links = await getLinksForParent();
+  const childOptions = links
+    .filter((l) => l.status === 'approved')
+    .map((l) => ({ id: l.child_id, name: l.child_name ?? 'Child' }));
+
+  if (childOptions.length === 0) {
+    return (
+      <section className="rounded-lg border p-4 flex flex-col gap-2">
+        <h2 className="font-medium">Send an enquiry</h2>
+        <p className="text-sm text-muted-foreground">
+          Add your child to your account first. Once they approve the link, you
+          can send enquiries for them.
+        </p>
+        <Link
+          href="/parent/children/add"
+          className="text-sm underline underline-offset-4 w-fit"
+        >
+          Add a child →
+        </Link>
+      </section>
+    );
+  }
+
+  const allSubjects = await getSubjects();
+  const subjectOptions = allSubjects.filter((s) => tutorSubjects.includes(s.name));
+
+  return (
+    <EnquiryForm
+      teacherId={tutorId}
+      teacherName={tutorName}
+      childOptions={childOptions}
+      subjectOptions={subjectOptions}
+    />
+  );
+}
 
 async function TutorProfile({ params }: { params: Promise<{ id: string }> }) {
   await connection();
@@ -96,6 +173,12 @@ async function TutorProfile({ params }: { params: Promise<{ id: string }> }) {
           <p className="text-sm whitespace-pre-wrap break-words">{tutor.bio}</p>
         </section>
       )}
+
+      <EnquirySection
+        tutorId={tutor.id}
+        tutorName={tutor.full_name}
+        tutorSubjects={tutor.subjects}
+      />
 
       {!verified && (
         <p className="text-xs text-muted-foreground">

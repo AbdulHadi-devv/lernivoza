@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { connection } from 'next/server';
 import { getCurrentProfile } from '@/lib/supabase/profile';
 import { getUnreadCount } from '@/lib/supabase/messages';
+import { getPendingEnquiryCount } from '@/lib/supabase/enquiries';
 import Link from 'next/link';
 
 async function TeacherDashboard() {
@@ -13,6 +14,7 @@ async function TeacherDashboard() {
   if (profile.role !== 'teacher') redirect('/protected');
 
   const unread = await getUnreadCount();
+  const pendingEnquiries = await getPendingEnquiryCount();
 
   return (
     <div className="flex flex-col gap-6">
@@ -24,6 +26,26 @@ async function TeacherDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="rounded-lg border p-4">
+          <h2 className="font-medium">
+            Enquiries
+            {pendingEnquiries > 0 && (
+              <span className="ml-2 rounded-full bg-red-600 px-2 py-0.5 text-xs text-white">
+                {pendingEnquiries}
+              </span>
+            )}
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Accept or decline requests from parents.
+          </p>
+          <Link
+            href="/enquiries"
+            className="text-sm underline underline-offset-4 mt-2 inline-block"
+          >
+            Review enquiries →
+          </Link>
+        </div>
+
         <div className="rounded-lg border p-4">
           <h2 className="font-medium">My Students</h2>
           <p className="text-sm text-muted-foreground mt-1">
