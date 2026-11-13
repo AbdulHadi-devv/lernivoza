@@ -166,9 +166,11 @@ export default function ParentChildrenPage() {
                     className="rounded-lg border p-4 flex justify-between items-center"
                   >
                     <div>
-                      <p className="font-medium">{l.child_name}</p>
+                      <p className="font-medium">Link request</p>
                       <p className="text-xs text-muted-foreground">
-                        Waiting for the child to approve.
+                        Sent {new Date(l.created_at).toLocaleDateString()}.
+                        Waiting for your child to approve. Their name appears
+                        here once they do.
                       </p>
                     </div>
                     <span className="px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
