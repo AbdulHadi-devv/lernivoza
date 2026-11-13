@@ -5,7 +5,9 @@ import Link from 'next/link';
 import {
   getMyTutorProfile,
   getSubjects,
+  requestVerification,
   saveMyTutorProfile,
+  withdrawVerificationRequest,
   type SubjectOption,
 } from '@/lib/supabase/tutors';
 import {
@@ -29,6 +31,9 @@ export default function TeacherProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [profileId, setProfileId] = useState<string | null>(null);
+  const [savedListed, setSavedListed] = useState(false);
+  const [verifyBusy, setVerifyBusy] = useState(false);
+  const [verifyNote, setVerifyNote] = useState<string | null>(null);
 
   const [bio, setBio] = useState('');
   const [qualification, setQualification] = useState('');
@@ -60,6 +65,7 @@ export default function TeacherProfilePage() {
         setGradeMax(mine.grade_max !== null ? String(mine.grade_max) : '');
         setSubjectIds(mine.subject_ids);
         setListed(mine.is_listed);
+        setSavedListed(mine.is_listed);
         setVerification(mine.verification_status);
       }
       setLoading(false);
@@ -100,7 +106,32 @@ export default function TeacherProfilePage() {
       return;
     }
     if (result.id) setProfileId(result.id);
+    setSavedListed(listed);
+    const mine = await getMyTutorProfile();
+    if (mine) setVerification(mine.verification_status);
+    setVerifyNote(null);
     setSaved(true);
+  }
+
+  async function handleVerification(action: 'request' | 'withdraw') {
+    setVerifyBusy(true);
+    setVerifyNote(null);
+    setError(null);
+    const result =
+      action === 'request'
+        ? await requestVerification()
+        : await withdrawVerificationRequest();
+    setVerifyBusy(false);
+    if (!result.success) {
+      setError(result.error ?? 'Could not update the verification request.');
+      return;
+    }
+    setVerification(action === 'request' ? 'pending' : 'unverified');
+    setVerifyNote(
+      action === 'request'
+        ? 'Verification requested. An administrator will review your profile.'
+        : 'Verification request withdrawn.'
+    );
   }
 
   if (loading) {
@@ -275,10 +306,53 @@ export default function TeacherProfilePage() {
               To list your profile you need a bio, at least one subject, a fee,
               how you teach, your classes and your city.
             </p>
-            <p className="text-xs text-muted-foreground">
-              Verification: {verificationLabel(verification)}. Profiles are
-              checked by an administrator; this is not available yet.
-            </p>
+            <div className="flex flex-col gap-2 pt-2 border-t">
+              <p className="text-xs text-muted-foreground">
+                Verification:{' '}
+                <span className="font-medium text-foreground">
+                  {verificationLabel(verification)}
+                </span>
+                {verification === 'verified' &&
+                  '. Changing your qualification removes it until an administrator checks again.'}
+              </p>
+
+              {verification === 'unverified' &&
+                (savedListed ? (
+                  <div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={verifyBusy}
+                      onClick={() => handleVerification('request')}
+                    >
+                      Request verification
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    Save your profile as listed to request verification.
+                  </p>
+                ))}
+
+              {verification === 'pending' && (
+                <div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={verifyBusy}
+                    onClick={() => handleVerification('withdraw')}
+                  >
+                    Withdraw request
+                  </Button>
+                </div>
+              )}
+
+              {verifyNote && (
+                <p className="text-xs text-green-700">{verifyNote}</p>
+              )}
+            </div>
           </div>
 
           {error && (

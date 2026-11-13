@@ -18,13 +18,14 @@ async function RoleDispatcher() {
       redirect('/student');
     case 'teacher':
       redirect('/teacher');
-    case 'institute_admin':
     case 'platform_admin':
+      redirect('/admin');
+    case 'institute_admin':
       // Not built yet; land them on a placeholder
       return (
         <div className="p-4 rounded-lg border">
           <p className="text-sm">
-            Admin dashboards are not available yet. You are signed in as{' '}
+            Institute dashboards are not available yet. You are signed in as{' '}
             <strong>{profile.role}</strong>.
           </p>
         </div>

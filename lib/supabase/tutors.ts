@@ -235,3 +235,61 @@ export async function saveMyTutorProfile(
 
   return { success: true, id: user.id };
 }
+
+/**
+ * Teacher asks an administrator to verify their (listed) profile.
+ * The database only lets a tutor move unverified -> pending.
+ */
+export async function requestVerification(): Promise<{
+  success: boolean;
+  error?: string;
+}> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Not signed in.' };
+
+  const { data, error } = await supabase
+    .from('teacher_profiles')
+    .update({ verification_status: 'pending' })
+    .eq('id', user.id)
+    .eq('verification_status', 'unverified')
+    .select('id');
+
+  if (error) return { success: false, error: error.message };
+  if (!data || data.length === 0) {
+    return {
+      success: false,
+      error: 'Save your profile as listed first, then request verification.',
+    };
+  }
+  return { success: true };
+}
+
+/**
+ * Teacher withdraws a pending verification request.
+ */
+export async function withdrawVerificationRequest(): Promise<{
+  success: boolean;
+  error?: string;
+}> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Not signed in.' };
+
+  const { data, error } = await supabase
+    .from('teacher_profiles')
+    .update({ verification_status: 'unverified' })
+    .eq('id', user.id)
+    .eq('verification_status', 'pending')
+    .select('id');
+
+  if (error) return { success: false, error: error.message };
+  if (!data || data.length === 0) {
+    return { success: false, error: 'There is no pending request to withdraw.' };
+  }
+  return { success: true };
+}
