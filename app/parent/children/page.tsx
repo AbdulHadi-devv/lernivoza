@@ -28,6 +28,7 @@ import {
   type AssignmentSummary,
 } from '@/lib/supabase/assignments-utils';
 import { Button } from '@/components/ui/button';
+import { ProgressChart } from '@/components/progress-chart';
 
 const MAX_ASSIGNMENT_ROWS = 10;
 
@@ -126,17 +127,23 @@ export default function ParentChildrenPage() {
   const selectedLink = approved.find((l) => l.child_id === selected);
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-start justify-between">
+    <div className="min-h-screen flex flex-col items-center p-6">
+    <div className="w-full max-w-5xl flex flex-col gap-6">
+      <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">My Children</h1>
           <p className="text-sm text-muted-foreground mt-1">
             View each child&apos;s progress and manage your links.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/parent/children/add">+ Add a child</Link>
-        </Button>
+        <div className="flex items-center gap-4">
+          <Link href="/parent" className="text-sm underline underline-offset-4">
+            ← Dashboard
+          </Link>
+          <Button asChild>
+            <Link href="/parent/children/add">+ Add a child</Link>
+          </Button>
+        </div>
       </div>
 
       {error && (
@@ -302,6 +309,11 @@ export default function ParentChildrenPage() {
                     </div>
                   )}
 
+                  {/* Score over time */}
+                  {assessments.length > 0 && (
+                    <ProgressChart assessments={assessments} />
+                  )}
+
                   {/* Assessments table */}
                   {assessments.length === 0 ? (
                     <div className="rounded-lg border p-6 text-center">
@@ -375,6 +387,7 @@ export default function ParentChildrenPage() {
           )}
         </>
       )}
+    </div>
     </div>
   );
 }
