@@ -8,6 +8,7 @@ import { getSubjects, getTutor } from '@/lib/supabase/tutors';
 import { getCurrentProfile } from '@/lib/supabase/profile';
 import { getLinksForParent } from '@/lib/supabase/parent-links';
 import { EnquiryForm } from '@/components/enquiry-form';
+import { TutorMap } from '@/components/tutor-map';
 import {
   formatFee,
   formatGrades,
@@ -173,6 +174,13 @@ async function TutorProfile({ params }: { params: Promise<{ id: string }> }) {
           <p className="text-sm whitespace-pre-wrap break-words">{tutor.bio}</p>
         </section>
       )}
+
+      <TutorMap
+        name={tutor.full_name}
+        mode={tutor.teaching_mode}
+        city={tutor.city}
+        area={tutor.area}
+      />
 
       <EnquirySection
         tutorId={tutor.id}

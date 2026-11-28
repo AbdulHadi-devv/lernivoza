@@ -32,6 +32,7 @@ export default function TeacherProfilePage() {
   const [saved, setSaved] = useState(false);
   const [profileId, setProfileId] = useState<string | null>(null);
   const [savedListed, setSavedListed] = useState(false);
+  const [savedQualification, setSavedQualification] = useState('');
   const [verifyBusy, setVerifyBusy] = useState(false);
   const [verifyNote, setVerifyNote] = useState<string | null>(null);
 
@@ -66,6 +67,7 @@ export default function TeacherProfilePage() {
         setSubjectIds(mine.subject_ids);
         setListed(mine.is_listed);
         setSavedListed(mine.is_listed);
+        setSavedQualification(mine.qualification ?? '');
         setVerification(mine.verification_status);
       }
       setLoading(false);
@@ -108,7 +110,10 @@ export default function TeacherProfilePage() {
     if (result.id) setProfileId(result.id);
     setSavedListed(listed);
     const mine = await getMyTutorProfile();
-    if (mine) setVerification(mine.verification_status);
+    if (mine) {
+      setVerification(mine.verification_status);
+      setSavedQualification(mine.qualification ?? '');
+    }
     setVerifyNote(null);
     setSaved(true);
   }
@@ -317,7 +322,16 @@ export default function TeacherProfilePage() {
               </p>
 
               {verification === 'unverified' &&
-                (savedListed ? (
+                (!savedListed ? (
+                  <p className="text-xs text-muted-foreground">
+                    Save your profile as listed to request verification.
+                  </p>
+                ) : savedQualification.trim().length < 5 ? (
+                  <p className="text-xs text-muted-foreground">
+                    Add your qualification above and save to request
+                    verification.
+                  </p>
+                ) : (
                   <div>
                     <Button
                       type="button"
@@ -329,10 +343,6 @@ export default function TeacherProfilePage() {
                       Request verification
                     </Button>
                   </div>
-                ) : (
-                  <p className="text-xs text-muted-foreground">
-                    Save your profile as listed to request verification.
-                  </p>
                 ))}
 
               {verification === 'pending' && (
